@@ -4,12 +4,20 @@ from transformers import MobileBertTokenizer, MobileBertForSequenceClassificatio
 
 app = Flask(__name__)
 
+
+# requires hugging face model from `git clone https://huggingface.co/cssupport/mobilebert-sql-injection-detect` locally downloaded
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 tokenizer = MobileBertTokenizer.from_pretrained('google/mobilebert-uncased')
 model = MobileBertForSequenceClassification.from_pretrained('./mobilebert-sql-injection-detect')
 model.to(device)
 model.eval()
 
+"""
+predict of given text contains malious SQL code
+
+:param text: String
+:return: predicted class (No SQL injection or there is SQL injection) and confidence float
+"""
 def predict(text):
 
     inputs = tokenizer(text, padding=False, truncation=True, return_tensors='pt', max_length=512)
@@ -24,6 +32,11 @@ def predict(text):
     predicted_class = torch.argmax(probabilities, dim=1).item()
     return predicted_class, probabilities[0][predicted_class].item()
 
+"""
+verify SQL POST route
+
+:return: JSON object with 'lable' and 'confidence'
+"""
 @app.route("/verifySQL", methods=["POST"])
 def verifySQL():
     data = request.get_json()
