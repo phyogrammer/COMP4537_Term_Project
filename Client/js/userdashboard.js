@@ -4,6 +4,7 @@ class UserDashboard {
     {
         try 
         {
+            // figure out the get requests and endpoints
             const response = await fetch('/api/user/info', 
                 {
                 method: 'GET',

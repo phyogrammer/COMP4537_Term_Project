@@ -4,10 +4,12 @@ class AdminDashboard {
 
         try 
         {
+            // figure out the GET requests and endpoints
             const response = await fetch('/api/admin/recentUserUsage', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    // Figure this out
                     'Authorization': 'Bearer ' + localStorage.getItem('authToken')
                 }
             });
