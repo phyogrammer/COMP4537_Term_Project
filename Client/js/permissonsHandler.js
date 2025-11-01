@@ -9,7 +9,7 @@ class PermissionsHandler {
                 window.location.href = 'userDashboard.html';
             }
         } else {
-            console.error("Login failed:", response.message);
+            alert("Login failed:" + response.message);
         }
     }
 

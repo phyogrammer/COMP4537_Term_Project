@@ -39,3 +39,11 @@ const loginPageStrings = {
     REGISTRATION_REDIRECT_LABEL: "Don't have an account?",
     REGISTRATION_REDIRECT: 'Register here.',
 };
+
+const userDashboardStrings = {
+
+};
+
+const adminDashboardStrings = {
+    DASHBOARD_PAGE_TITLE: 'Admin Dashboard'
+};
