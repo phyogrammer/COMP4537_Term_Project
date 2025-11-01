@@ -23,7 +23,7 @@ class UserDashboard {
         }
         catch (error) 
         {
-            console.error('Error fetching user info:', error);
+            alert('Error fetching user info: ' + error);
         }
 
     }

@@ -48,7 +48,7 @@ class AdminDashboard {
         } 
         catch (error) 
         {
-            console.error('Error fetching recent user usage:', error);
+            alert('Error fetching recent user usage: ' + error);
         }
     }
 }
