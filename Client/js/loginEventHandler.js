@@ -31,6 +31,7 @@ class LoginEventHandler
                 });
 
             const data = await response.json();
+            console.log("Response Data: ", data);
 
             if (data.success) 
             {
