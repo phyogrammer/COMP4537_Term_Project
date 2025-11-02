@@ -7,7 +7,7 @@ export default class ClientRequestHandler
 {
     constructor(app) 
     {
-        this._app = app;
+        this.app = app;
 
         this.initializeRoutes();
     }
@@ -20,39 +20,38 @@ export default class ClientRequestHandler
 
     handleRegistration() 
     {
-        this._app.post("/api/app/register", async (req, res) => 
+        this.app.post("/api/app/register", async (req, res) => {
+            try
             {
-                try
+                const { firstName, lastName, email, password } = req.body;
+
+                if (await this.emailExists(email))
                 {
-                    const { firstname, lastname, email, password } = req.body;
-
-                    if (await this.emailExists(email))
-                    {
-                        return res.status(400).json({
-                            success: false,
-                            message: "Email already registered"
-                        });
-                    }
-
-                    const hashedPassword = await this.hashPassword(password);
-
-                    const user = new UserModel({ firstname, lastname, email, password: hashedPassword });
-
-                    await user.save();
-
-                    return res.json({ 
-                        success: true, 
-                        message: "User registered", 
-                        userId: user._id 
+                    return res.status(400).json({
+                        success: false,
+                        message: "Email already registered"
                     });
                 }
-                catch (error)
-                {
-                    return res.status(500).json({
-                        success: false,
-                        message: error.message
-                    })
-                }
+
+                const hashedPassword = await this.hashPassword(password);
+
+                const user = new UserModel({ firstName, lastName, email, password: hashedPassword });
+
+                await user.save();
+
+                return res.json({ 
+                    success: true, 
+                    message: "User registered", 
+                    userId: user._id 
+                });
+            }
+            catch (error)
+            {
+                return res.status(500).json({
+                    success: false,
+                    message: error.message
+                });
+            }
         });
     }
 
@@ -72,7 +71,7 @@ export default class ClientRequestHandler
 
     handleLogin() 
     {
-        this._app.post("/api/app/login", (req, res) => {
+        this.app.post("/api/app/login", (req, res) => {
             try 
             {
                 const { email, password } = req.body;

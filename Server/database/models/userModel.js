@@ -3,16 +3,15 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
-    firstname: {
+    firstName: {
         type: String,
         required: true
     },
 
-    lastname: {
+    lastName: {
         type: String,
         required: true
     },

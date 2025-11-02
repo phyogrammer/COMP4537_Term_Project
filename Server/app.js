@@ -21,7 +21,6 @@ class Application
     {
         this.dbConnection = new DatabaseConnection();
     }
-
     
     startServer()
     {
