@@ -5,9 +5,9 @@ class PermissionsHandler {
         if (response.success) {
             localStorage.setItem('authToken', response.token);
             if (response.user.role === 'admin') {
-            window.location.href = 'adminDashboard.html';
+            window.location.href = './html/adminDashboard.html';
             } else {
-                window.location.href = 'userDashboard.html';
+                window.location.href = './html/userDashboard.html';
             }
         } else {
             alert("Login failed:" + response.message);
