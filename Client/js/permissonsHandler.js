@@ -4,7 +4,8 @@ class PermissionsHandler {
     static handleRedirect(response) {
         if (response.success) {
             localStorage.setItem('authToken', response.token);
-            if (response.user.role === 'admin') {
+            // Might have to look at this later, seems too simplistic
+            if (response.role === 'admin') {
             window.location.href = './html/adminDashboard.html';
             } else {
                 window.location.href = './html/userDashboard.html';

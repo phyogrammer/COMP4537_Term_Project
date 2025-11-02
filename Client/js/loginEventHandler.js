@@ -6,6 +6,7 @@ class LoginEventHandler
         {
             e.preventDefault();
 
+            // We will likely have to obscure the password here before sending it over the network
             const email = document.getElementById('userEmail').value;
             const password = document.getElementById('userPassword').value;
 
