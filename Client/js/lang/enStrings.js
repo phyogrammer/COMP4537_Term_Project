@@ -1,8 +1,8 @@
 const apiBaseUrl = 'http://localhost:3000';
 
 const endpoints = {
-    LOGIN: apiBaseUrl + '/api/app/login',
-    REGISTER: apiBaseUrl + '/api/app/register'
+    LOGIN: apiBaseUrl + '/api/users/login',
+    REGISTER: apiBaseUrl + '/api/users/register'
 };
 
 const responseStrings = {
