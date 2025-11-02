@@ -64,6 +64,8 @@ export default class UserController {
       return res.status(200).json({
         success: true,
         message: "Login successful",
+        role: user.role,
+        token: user.token,
       });
     } catch (error) {
       console.error("Login error: ", error);
@@ -81,7 +83,7 @@ export default class UserController {
 
   async emailExists(email) {
     const user = await UserModel.findOne({ email });
-    return !!user; 
+    return !!user;
   }
 
   async findUserByEmail(email) {
