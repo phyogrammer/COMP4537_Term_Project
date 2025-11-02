@@ -1,4 +1,4 @@
-const apiBaseUrl = 'https://termprojserver.onrender.com/';
+const apiBaseUrl = 'https://termprojserver.onrender.com';
 
 const endpoints = {
     LOGIN: apiBaseUrl + '/api/users/login',
