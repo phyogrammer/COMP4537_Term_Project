@@ -27,7 +27,7 @@ const userSchema = new Schema({
     required: true,
   },
 
-  token_left: {
+  numOfApiCallsLeft: {
     type: Number,
     default: 20,
   },
@@ -38,10 +38,15 @@ const userSchema = new Schema({
     default: "regular",
   },
 
-  token: {
+  apiKey: {
     type: String,
     default: null,
   },
+
+  token: {
+    type: String, 
+    default: null
+  }
 });
 
 const UserModel = mongoose.model("users", userSchema);

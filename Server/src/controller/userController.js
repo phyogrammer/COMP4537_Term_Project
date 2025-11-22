@@ -1,9 +1,20 @@
 import UserModel from "../models/userModel.js";
 import bcrypt, { hash } from "bcrypt";
 
+import AIService from "../services/aiService.js";
+import APIService from "../services/apiService.js";
+
 const SALT_ROUND = 12;
 
 export default class UserController {
+  constructor(authService, aiEndpoint) {
+    this.authService = authService;
+    this.aiEndpoint = aiEndpoint;
+
+    this.aiService = new AIService(aiEndpoint);
+    this.apiService = new APIService();
+  }
+
   async register(req, res) {
     try {
       const { firstName, lastName, email, password } = req.body;
@@ -17,11 +28,14 @@ export default class UserController {
 
       const hashedPassword = await this.hashedPassword(password);
 
+      const apiKey = this.apiService.generateApiKey();
+
       const user = new UserModel({
         firstName,
         lastName,
         email,
         password: hashedPassword,
+        apiKey: apiKey,
       });
 
       await user.save();
@@ -61,17 +75,176 @@ export default class UserController {
         });
       }
 
+      const token = this.authService.generateToken({
+        id: user._id,
+        role: user.role,
+      });
+
+      user.token = token;
+      await user.save();
+
       return res.status(200).json({
         success: true,
         message: "Login successful",
         role: user.role,
-        token: user.token,
+        token: token,
       });
     } catch (error) {
       console.error("Login error: ", error);
       return res.status(500).json({
         success: false,
         message: "An error occurred during login.",
+      });
+    }
+  }
+
+  async logout(req, res) {
+    return res.status(200).json({
+      success: true,
+      message: "Logout successful",
+    });
+  }
+
+  async getAllUsers(req, res) {
+    try {
+      const users = await UserModel.find({});
+
+      return res.status(200).json({
+        success: true,
+        data: users,
+      });
+    } catch (error) {
+      console.error("Get all users error: ", error);
+      return res.status(500).json({
+        success: false,
+        message: "An error occurred while retrieving users.",
+      });
+    }
+  }
+
+  async removeUser(req, res) {
+    try {
+      const userId = req.params.id;
+
+      await UserModel.deleteOne({ _id: userId });
+      return res.status(200).json({
+        success: true,
+        message: "User removed successfully",
+      });
+    } catch (error) {
+      console.error("Remove user error: ", error);
+      return res.status(500).json({
+        success: false,
+        message: "An error occurred while removing user.",
+      });
+    }
+  }
+
+  async getNumOfApiCallsLeft(req, res) {
+    try {
+      const userId = req.user.id;
+      const user = await UserModel.findById(userId);
+
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: "User not found",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        tokensLeft: user.numOfApiCallsLeft,
+      });
+    } catch (error) {
+      console.error("Get tokens left error: ", error);
+      return res.status(500).json({
+        success: false,
+        message: "An error occurred while retrieving token count.",
+      });
+    }
+  }
+
+  async generateNewApiKey(req, res) {
+    try {
+      const userId = req.user.id;
+      const newApiKey = this.apiService.generateApiKey();
+
+      const user = await UserModel.findByIdAndUpdate(userId, {
+        apiKey: newApiKey,
+      });
+
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: "User not found",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        newApiKey: newApiKey,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Error generating a new api key",
+      });
+    }
+  }
+
+  async getApiKey(req, res) {
+    try {
+      const userId = req.user.id;
+      const user = await UserModel.findById(userId);
+
+      if (!user) {
+        return res.status(400).json({
+          success: false,
+          message: "User not found",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        apiKey: user.apiKey,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  }
+
+  async talkWithAi(req, res) {
+    try {
+      const userId = req.user.id;
+      const data = req.body;
+      const encodedData = encodeURIComponent(data.data);
+
+      const responseFromAi = await this.aiService.sendDataToAi(encodedData);
+
+      const user = await this.apiService.decrementApiCallsNum(userId);
+
+      if (user.numOfApiCallsLeft < 0) {
+        return res.status(200).json({
+          success: true,
+          data: responseFromAi,
+          message: "No API calls left, but you can still use the service.",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        data: responseFromAi,
+        numOfApiCallsLeft: user.numOfApiCallsLeft,
+      });
+    } catch (error) {
+      console.error("Error talking with AI: ", error);
+      return res.status(500).json({
+        success: false,
+        message: `${error}`,
       });
     }
   }
