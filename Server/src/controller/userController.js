@@ -28,6 +28,7 @@ export default class UserController {
 
       const hashedPassword = await this.hashedPassword(password);
 
+      // Generate API key for the new user (Required for accessing AI services)
       const apiKey = this.apiService.generateApiKey();
 
       const user = new UserModel({
@@ -75,11 +76,13 @@ export default class UserController {
         });
       }
 
+      // Generate JWT token for the user upon successful login
       const token = this.authService.generateToken({
         id: user._id,
         role: user.role,
       });
 
+      // Save the token to the user model
       user.token = token;
       await user.save();
 
@@ -105,6 +108,7 @@ export default class UserController {
     });
   }
 
+  // Get all users (Admin only)
   async getAllUsers(req, res) {
     try {
       const users = await UserModel.find({});
@@ -114,7 +118,6 @@ export default class UserController {
         data: users,
       });
     } catch (error) {
-      console.error("Get all users error: ", error);
       return res.status(500).json({
         success: false,
         message: "An error occurred while retrieving users.",
@@ -122,17 +125,17 @@ export default class UserController {
     }
   }
 
+  // Remove a user (Admin only)
   async removeUser(req, res) {
     try {
       const userId = req.params.id;
-
       await UserModel.deleteOne({ _id: userId });
+
       return res.status(200).json({
         success: true,
         message: "User removed successfully",
       });
     } catch (error) {
-      console.error("Remove user error: ", error);
       return res.status(500).json({
         success: false,
         message: "An error occurred while removing user.",
@@ -217,6 +220,8 @@ export default class UserController {
     }
   }
 
+  // Main AI interaction endpoint
+  // Communite with AI service and decrement user's API calls
   async talkWithAi(req, res) {
     try {
       const userId = req.user.id;
@@ -227,6 +232,8 @@ export default class UserController {
 
       const user = await this.apiService.decrementApiCallsNum(userId);
 
+      // If user has exhausted their API calls (20),
+      // still allow interaction but notify them
       if (user.numOfApiCallsLeft < 0) {
         return res.status(200).json({
           success: true,
@@ -249,6 +256,7 @@ export default class UserController {
     }
   }
 
+  /* Helper methods */
   async hashedPassword(password) {
     const salt = await bcrypt.genSalt(SALT_ROUND);
     return await bcrypt.hash(password, salt);

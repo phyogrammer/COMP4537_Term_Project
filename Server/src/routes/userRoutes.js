@@ -26,9 +26,9 @@ export default class UserRoutes {
     this.removeUserRoutes();
     this.getNumberOfTokensLeftRoutes();
     this.logoutRoutes();
-    this.talkWithAi();
 
-    // wip
+    // AI and API Related Routes
+    this.talkWithAi();
     this.getApiKey();
     this.generateNewApiKey();
   }
