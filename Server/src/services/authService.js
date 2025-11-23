@@ -9,6 +9,10 @@ export default class AuthService {
   }
 
   generateToken(payload) {
+    if (!this.secretyKey) {
+      throw new Error("JWT_SECRET environment variable is not defined");
+    }
+    
     return jwt.sign(payload, this.secretyKey);
   }
 

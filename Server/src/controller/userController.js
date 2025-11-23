@@ -1,8 +1,9 @@
 import UserModel from "../models/userModel.js";
-import bcrypt, { hash } from "bcrypt";
+import bcrypt from "bcrypt";
 
 import AIService from "../services/aiService.js";
 import APIService from "../services/apiService.js";
+import { MESSAGE } from "../lang/en/messsage.js";
 
 const SALT_ROUND = 12;
 
@@ -17,18 +18,17 @@ export default class UserController {
 
   async register(req, res) {
     try {
-      const { firstName, lastName, email, password } = req.body;
+      const { firstName, lastName, email, password, role } = req.body;
 
       if (await this.emailExists(email)) {
         return res.status(400).json({
           success: false,
-          message: "Email already registered.",
+          message: MESSAGE.USER.EMAIL_EXISTS,
         });
       }
 
       const hashedPassword = await this.hashedPassword(password);
 
-      // Generate API key for the new user (Required for accessing AI services)
       const apiKey = this.apiService.generateApiKey();
 
       const user = new UserModel({
@@ -36,20 +36,22 @@ export default class UserController {
         lastName,
         email,
         password: hashedPassword,
+        role: role || "user",
         apiKey: apiKey,
       });
 
       await user.save();
 
+      await this.apiService.apiRequestsTracker("/api/users/register");
+
       return res.status(201).json({
         success: true,
-        message: "User registered successfully",
+        message: MESSAGE.USER.REGISTER_SUCCESS,
       });
     } catch (error) {
-      console.error("Registeration error: ", error.message);
       return res.status(500).json({
         success: false,
-        message: "An error occurred during registeration.",
+        message: MESSAGE.ERROR.SERVER_ERROR,
       });
     }
   }
@@ -63,7 +65,7 @@ export default class UserController {
       if (!user) {
         return res.status(401).json({
           success: false,
-          message: "Invalid email or password",
+          message: MESSAGE.USER.INVALID_CREDS,
         });
       }
 
@@ -72,75 +74,47 @@ export default class UserController {
       if (!isPasswordValid) {
         return res.status(401).json({
           success: false,
-          message: "Invalid email or password",
+          message: MESSAGE.USER.INVALID_CREDS,
         });
       }
 
-      // Generate JWT token for the user upon successful login
       const token = this.authService.generateToken({
         id: user._id,
         role: user.role,
       });
 
-      // Save the token to the user model
-      user.token = token;
       await user.save();
+
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+      });
+
+      await this.apiService.apiRequestsTracker("/api/users/login");
 
       return res.status(200).json({
         success: true,
-        message: "Login successful",
+        message: MESSAGE.AUTH.LOGIN_SUCCESS,
         role: user.role,
-        token: token,
       });
     } catch (error) {
-      console.error("Login error: ", error);
       return res.status(500).json({
         success: false,
-        message: "An error occurred during login.",
+        message: MESSAGE.ERROR.SERVER_ERROR + error.message,
       });
     }
   }
 
   async logout(req, res) {
+    res.clearCookie("token");
+
+    await this.apiService.apiRequestsTracker("/api/users/logout");
+
     return res.status(200).json({
       success: true,
-      message: "Logout successful",
+      message: MESSAGE.AUTH.LOGOUT_SUCCESS,
     });
-  }
-
-  // Get all users (Admin only)
-  async getAllUsers(req, res) {
-    try {
-      const users = await UserModel.find({});
-
-      return res.status(200).json({
-        success: true,
-        data: users,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: "An error occurred while retrieving users.",
-      });
-    }
-  }
-
-  // Remove a user (Admin only)
-  async removeUser(req, res) {
-    try {
-      const userId = req.params.id;
-      await UserModel.deleteOne({ _id: userId });
-
-      return res.status(200).json({
-        success: true,
-        message: "User removed successfully",
-      });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: "An error occurred while removing user.",
-      });
-    }
   }
 
   async getNumOfApiCallsLeft(req, res) {
@@ -151,19 +125,20 @@ export default class UserController {
       if (!user) {
         return res.status(404).json({
           success: false,
-          message: "User not found",
+          message: MESSAGE.USER.NOT_FOUND,
         });
       }
+
+      await this.apiService.apiRequestsTracker("/api/users/apicallsleft");
 
       return res.status(200).json({
         success: true,
         tokensLeft: user.numOfApiCallsLeft,
       });
     } catch (error) {
-      console.error("Get tokens left error: ", error);
       return res.status(500).json({
         success: false,
-        message: "An error occurred while retrieving token count.",
+        message: MESSAGE.ERROR.SERVER_ERROR + error.message,
       });
     }
   }
@@ -180,9 +155,11 @@ export default class UserController {
       if (!user) {
         return res.status(404).json({
           success: false,
-          message: "User not found",
+          message: MESSAGE.ERROR.USER_NOT_FOUND,
         });
       }
+
+      await this.apiService.apiRequestsTracker("/api/users/getnewapikey");
 
       return res.status(200).json({
         success: true,
@@ -191,7 +168,7 @@ export default class UserController {
     } catch (error) {
       return res.status(500).json({
         success: false,
-        message: "Error generating a new api key",
+        message: MESSAGE.ERROR.SERVER_ERROR + error.message,
       });
     }
   }
@@ -204,9 +181,11 @@ export default class UserController {
       if (!user) {
         return res.status(400).json({
           success: false,
-          message: "User not found",
+          message: MESSAGE.ERROR.USER_NOT_FOUND,
         });
       }
+
+      await this.apiService.apiRequestsTracker("/api/users/getapikey");
 
       return res.status(200).json({
         success: true,
@@ -215,13 +194,11 @@ export default class UserController {
     } catch (error) {
       return res.status(500).json({
         success: false,
-        message: error.message,
+        message: MESSAGE.ERROR.SERVER_ERROR + error.message,
       });
     }
   }
 
-  // Main AI interaction endpoint
-  // Communite with AI service and decrement user's API calls
   async talkWithAi(req, res) {
     try {
       const userId = req.user.id;
@@ -232,15 +209,15 @@ export default class UserController {
 
       const user = await this.apiService.decrementApiCallsNum(userId);
 
-      // If user has exhausted their API calls (20),
-      // still allow interaction but notify them
       if (user.numOfApiCallsLeft < 0) {
         return res.status(200).json({
           success: true,
           data: responseFromAi,
-          message: "No API calls left, but you can still use the service.",
+          message: MESSAGE.USER.API_CALL_EXCEEDED,
         });
       }
+
+      await this.apiService.apiRequestsTracker("/api/users/sqlinjcheck");
 
       return res.status(200).json({
         success: true,
@@ -248,15 +225,13 @@ export default class UserController {
         numOfApiCallsLeft: user.numOfApiCallsLeft,
       });
     } catch (error) {
-      console.error("Error talking with AI: ", error);
       return res.status(500).json({
         success: false,
-        message: `${error}`,
+        message: MESSAGE.ERROR.AI_SERVICE_ERROR + error.message,
       });
     }
   }
 
-  /* Helper methods */
   async hashedPassword(password) {
     const salt = await bcrypt.genSalt(SALT_ROUND);
     return await bcrypt.hash(password, salt);

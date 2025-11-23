@@ -22,12 +22,8 @@ export default class UserRoutes {
   init() {
     this.registerRoutes();
     this.loginRoutes();
-    this.addUserRoutes();
-    this.removeUserRoutes();
     this.getNumberOfTokensLeftRoutes();
     this.logoutRoutes();
-
-    // AI and API Related Routes
     this.talkWithAi();
     this.getApiKey();
     this.generateNewApiKey();
@@ -52,34 +48,16 @@ export default class UserRoutes {
     );
   }
 
-  addUserRoutes() {
-    this.router.get(
-      "/admin/users-info",
-      this.authMiddleware.authenticate.bind(this.authMiddleware),
-      this.authMiddleware.authorize(["admin"]).bind(this.authMiddleware),
-      this.controller.getAllUsers.bind(this.controller)
-    );
-  }
-
-  removeUserRoutes() {
-    this.router.delete(
-      "/admin/delete/:id",
-      this.authMiddleware.authenticate.bind(this.authMiddleware),
-      this.authMiddleware.authorize(["admin"]).bind(this.authMiddleware),
-      this.controller.removeUser.bind(this.controller)
-    );
-  }
-
   getNumberOfTokensLeftRoutes() {
     this.router.get(
-      "/api-calls-left",
+      "/apicallsleft",
       this.authMiddleware.authenticate.bind(this.authMiddleware),
       this.controller.getNumOfApiCallsLeft.bind(this.controller)
     );
   }
 
   generateNewApiKey() {
-    this.router.get(
+    this.router.put(
       "/getnewapikey",
       this.authMiddleware.authenticate.bind(this.controller),
       this.controller.generateNewApiKey.bind(this.controller)
