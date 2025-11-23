@@ -1,8 +1,21 @@
-const apiBaseUrl = 'https://termprojserver.onrender.com';
+const apiBaseUrl = 'https://termprojserver.onrender.com/api/';
 
 const endpoints = {
-    LOGIN: apiBaseUrl + '/api/users/login',
-    REGISTER: apiBaseUrl + '/api/users/register'
+    // User Authentication
+    REGISTER: apiBaseUrl + 'users/register',
+    LOGIN: apiBaseUrl + 'users/login',
+    LOGOUT: apiBaseUrl + 'users/logout',
+    
+    // User API Key & Usage
+    API_CALLS_LEFT: apiBaseUrl + 'users/apicallsleft',
+    GET_NEW_API_KEY: apiBaseUrl + 'users/getnewapikey',
+    GET_API_KEY: apiBaseUrl + 'users/getapikey',
+    SQL_INJ_CHECK: apiBaseUrl + 'users/sqlinjcheck',
+    
+    // Admin Endpoints
+    GET_USERS_INFO: apiBaseUrl + 'admin/getusersinfo',
+    DELETE_USER: apiBaseUrl + 'admin/delete/',
+    GET_API_STATS: apiBaseUrl + 'admin/getapistats'
 };
 
 const responseStrings = {
@@ -41,9 +54,32 @@ const loginPageStrings = {
 };
 
 const userDashboardStrings = {
-
+    SIDEBAR_HEADER: 'SQL injection tester',
+    SIDEBAR_DASHBOARD: 'Dashboard',
+    SIDEBAR_ABOUT: 'About',
+    SIDEBAR_CONTACT: 'Contact',
+    NAV_USER_NAME: 'Test User',
+    PAGE_TITLE: 'User Dashboard',
+    TOKEN_CARD_TITLE: 'Your Tokens',
+    TOKEN_CARD_TEXT: 'You have X tokens remaining',
+    GET_MORE_TOKENS_BUTTON: 'Get more tokens'
 };
 
 const adminDashboardStrings = {
-    DASHBOARD_PAGE_TITLE: 'Admin Dashboard'
+    SIDEBAR_HEADER: 'SQL injection tester',
+    SIDEBAR_DASHBOARD: 'Dashboard',
+    SIDEBAR_ABOUT: 'About',
+    SIDEBAR_CONTACT: 'Contact',
+    NAV_USER_NAME: 'Test User',
+    PAGE_TITLE: 'Admin Dashboard',
+    RECENT_USER_USAGE_TITLE: 'Recent User Usage',
+    TABLE_HEADER_EMAIL: 'Email',
+    TABLE_HEADER_FIRST_NAME: 'First Name',
+    TABLE_HEADER_LAST_NAME: 'Last Name',
+    TABLE_HEADER_TOKENS: 'Tokens',
+    TABLE_HEADER_ROLE: 'Role',
+    API_STATS_TITLE: 'API Endpoint Statistics',
+    API_STATS_TABLE_HEADER_METHOD: 'Method',
+    API_STATS_TABLE_HEADER_ENDPOINT: 'Endpoint',
+    API_STATS_TABLE_HEADER_REQUESTS: 'Requests'
 };

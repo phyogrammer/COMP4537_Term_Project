@@ -3,15 +3,17 @@ class PermissionsHandler {
     // Handles redirection based on user role after login or registration.
     static handleRedirect(response) {
         if (response.success) {
-            localStorage.setItem('authToken', response.token);
-            // Might have to look at this later, seems too simplistic
+            // Token is set as HTTP-only cookie by server, no need to save it
+            // Save user role for client-side checks
+            localStorage.setItem('userRole', response.role);
+            
             if (response.role === 'admin') {
-            window.location.href = './html/adminDashboard.html';
+                window.location.href = './html/adminDashboard.html';
             } else {
                 window.location.href = './html/userDashboard.html';
             }
         } else {
-            alert("Login failed:" + response.message);
+            alert("Login failed: " + response.message);
         }
     }
 

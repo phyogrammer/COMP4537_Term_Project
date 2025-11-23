@@ -24,6 +24,7 @@ class LoginEventHandler
                     headers: {
                         'Content-Type': 'application/json'
                     },
+                    credentials: 'include', // Important: Include cookies in request
                     body: JSON.stringify(
                         {
                             email,
@@ -38,6 +39,10 @@ class LoginEventHandler
             {
                 alert(responseStrings.LOGIN_SUCCESS);
                 PermissionsHandler.handleRedirect(data);
+            }
+            else
+            {
+                alert(responseStrings.LOGIN_FAILURE);
             }
         }
         catch (error)

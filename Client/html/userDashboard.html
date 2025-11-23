@@ -11,92 +11,10 @@
     <!-- Material Design Icons -->
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <script src="../js/lang/enStrings.js" defer></script>
     <!-- Sidebar example taken from: https://codepen.io/blcveen/pen/jwMdrX -->
-    <style>
-        @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,400i,500');
-
-        body {
-            overflow-x: hidden;
-            font-family: 'Roboto', sans-serif;
-            font-size: 16px;
-        }
-
-        /* Toggle Styles */
-        #viewport {
-            padding-left: 250px;
-            -webkit-transition: all 0.5s ease;
-            -moz-transition: all 0.5s ease;
-            -o-transition: all 0.5s ease;
-            transition: all 0.5s ease;
-        }
-
-        #content {
-            width: 100%;
-            position: relative;
-            margin-right: 0;
-        }
-
-        /* Sidebar Styles */
-        #sidebar {
-            z-index: 1000;
-            position: fixed;
-            left: 250px;
-            width: 250px;
-            height: 100%;
-            margin-left: -250px;
-            overflow-y: auto;
-            background: #37474F;
-            -webkit-transition: all 0.5s ease;
-            -moz-transition: all 0.5s ease;
-            -o-transition: all 0.5s ease;
-            transition: all 0.5s ease;
-        }
-
-        #sidebar header {
-            background-color: #263238;
-            font-size: 20px;
-            line-height: 52px;
-            text-align: center;
-        }
-
-        #sidebar header a {
-            color: #fff;
-            display: block;
-            text-decoration: none;
-        }
-
-        #sidebar header a:hover {
-            color: #fff;
-        }
-
-        #sidebar .nav {
-            flex-direction: column;
-        }
-
-        #sidebar .nav .nav-item {
-            width: 100%;
-        }
-
-        #sidebar .nav .nav-link {
-            background: none;
-            border-bottom: 1px solid #455A64;
-            color: #CFD8DC;
-            font-size: 14px;
-            padding: 16px 24px;
-            border-radius: 0;
-            display: block;
-            width: 100%;
-        }
-
-        #sidebar .nav .nav-link:hover {
-            background: none;
-            color: #ECEFF1;
-        }
-
-        #sidebar .nav .nav-link i {
-            margin-right: 16px;
-        }
-    </style>
 </head>
 
 <body>
@@ -105,21 +23,15 @@
         <!-- Sidebar -->
         <div id="sidebar">
             <header>
-                <a href="#">SQL injection tester</a>
+                <a id="sidebarHeader" href="#"></a>
             </header>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="zmdi zmdi-view-dashboard"></i> Dashboard
-                    </a>
+                    <a id="sidebarDashboard" class="nav-link" href="#"></a>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="zmdi zmdi-info-outline"></i> About
-                    </a>
+                    <a id="sidebarAbout" class="nav-link" href="#"></a>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="zmdi zmdi-comment-more"></i> Contact
-                    </a>
+                    <a id="sidebarContact" class="nav-link" href="#"></a>
                 </li>
             </ul>
         </div>
@@ -133,43 +45,42 @@
                             <a class="nav-link" href="#"><i class="zmdi zmdi-notifications text-danger"></i>
                             </a>
                         </li>
-                        <li class="nav-item"><a class="nav-link" href="#">Test User</a></li>
+                        <li class="nav-item"><a id="navUserName" class="nav-link" href="#"></a></li>
                     </ul>
                 </div>
             </nav>
             <div class="container-fluid">
-                <h1>User Dashboard</h1>
+                <h1 id="pageTitle"></h1>
 
 
                 <div class="card" style="width: 30rem;">
                     <img src="..." class="card-img-top" alt="...">
                     <div class="card-body">
-                        <h5 class="card-title">Your Tokens</h5>
+                        <h5 id="tokenCardTitle" class="card-title"></h5>
                         <p id="userTokenInfoDisplay" class="card-text"></p>
-                        <a href="#" class="btn btn-primary">Get more tokens</a>
+                        <a id="getMoreTokensButton" href="#" class="btn btn-primary"></a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
+    <script defer>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('sidebarHeader').textContent = userDashboardStrings.SIDEBAR_HEADER;
+            document.getElementById('sidebarDashboard').textContent = userDashboardStrings.SIDEBAR_DASHBOARD;
+            document.getElementById('sidebarAbout').textContent = userDashboardStrings.SIDEBAR_ABOUT;
+            document.getElementById('sidebarContact').textContent = userDashboardStrings.SIDEBAR_CONTACT;
+            document.getElementById('navUserName').textContent = userDashboardStrings.NAV_USER_NAME;
+            document.getElementById('pageTitle').textContent = userDashboardStrings.PAGE_TITLE;
+            document.getElementById('tokenCardTitle').textContent = userDashboardStrings.TOKEN_CARD_TITLE;
+            document.getElementById('getMoreTokensButton').textContent = userDashboardStrings.GET_MORE_TOKENS_BUTTON;
+        });
+    </script>
 </body>
 
 </html>
