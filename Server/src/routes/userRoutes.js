@@ -59,7 +59,7 @@ export default class UserRoutes {
   generateNewApiKey() {
     this.router.put(
       "/getnewapikey",
-      this.authMiddleware.authenticate.bind(this.controller),
+      this.authMiddleware.authenticate.bind(this.authMiddleware),
       this.controller.generateNewApiKey.bind(this.controller)
     );
   }
@@ -67,7 +67,7 @@ export default class UserRoutes {
   getApiKey() {
     this.router.get(
       "/getapikey",
-      this.authMiddleware.authenticate.bind(this.controller),
+      this.authMiddleware.authenticate.bind(this.authMiddleware),
       this.controller.getApiKey.bind(this.controller)
     );
   }
@@ -75,8 +75,8 @@ export default class UserRoutes {
   talkWithAi() {
     this.router.post(
       "/sqlinjcheck",
-      this.authMiddleware.authenticate.bind(this.controller),
-      this.authMiddleware.authenticateApiKey.bind(this.controller),
+      this.authMiddleware.authenticate.bind(this.authMiddleware),
+      this.authMiddleware.authenticateApiKey.bind(this.authMiddleware),
       this.controller.talkWithAi.bind(this.controller)
     );
   }

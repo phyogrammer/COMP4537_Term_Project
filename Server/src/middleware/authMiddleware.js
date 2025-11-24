@@ -18,7 +18,9 @@ class AuthMiddleware {
       req.user = decoded;
       next();
     } catch (error) {
-      res.status(401).json({ message: MESSAGE.AUTH.UNAUTHORIZED });
+      res
+        .status(401)
+        .json({ message: MESSAGE.AUTH.UNAUTHORIZED + ": " + error.message });
     }
   }
 
@@ -53,7 +55,9 @@ class AuthMiddleware {
   authorize(roles) {
     return (req, res, next) => {
       if (!roles.includes(req.user.role)) {
-        return res.status(403).json({ message: MESSAGE.AUTH.UNAUTHORIZED });
+        return res
+          .status(403)
+          .json({ message: MESSAGE.AUTH.UNAUTHORIZED + ": " + error.message });
       }
       next();
     };
