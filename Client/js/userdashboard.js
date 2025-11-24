@@ -64,7 +64,7 @@ class UserDashboard
         try 
         {
             response = await fetch(endpoints.GET_NEW_API_KEY, {
-                method: 'POST',
+                method: 'PUT',
                 credentials: 'include'
             });
 

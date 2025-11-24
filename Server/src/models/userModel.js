@@ -1,4 +1,7 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const { Schema } = mongoose;
 
@@ -31,8 +34,8 @@ const userSchema = new Schema({
 
   role: {
     type: String,
-    enum: ["regular", "admin"],
-    default: "regular",
+    enum: ["user", "admin"],
+    default: "user",
   },
 
   apiKey: {

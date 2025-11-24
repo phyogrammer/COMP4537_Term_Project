@@ -49,9 +49,10 @@ export default class UserController {
         message: MESSAGE.USER.REGISTER_SUCCESS,
       });
     } catch (error) {
+      console.error("Error in register:", error);
       return res.status(500).json({
         success: false,
-        message: MESSAGE.ERROR.SERVER_ERROR,
+        message: MESSAGE.ERROR.SERVER_ERROR + ": " + error.message,
       });
     }
   }
@@ -88,7 +89,7 @@ export default class UserController {
       res.cookie("token", token, {
         httpOnly: true,
         secure: true,
-        sameSite: "strict",
+        sameSite: "none",
       });
 
       await this.apiService.apiRequestsTracker("/api/users/login");
@@ -101,7 +102,7 @@ export default class UserController {
     } catch (error) {
       return res.status(500).json({
         success: false,
-        message: MESSAGE.ERROR.SERVER_ERROR + error.message,
+        message: MESSAGE.ERROR.SERVER_ERROR + ": " + error.message,
       });
     }
   }
@@ -138,7 +139,7 @@ export default class UserController {
     } catch (error) {
       return res.status(500).json({
         success: false,
-        message: MESSAGE.ERROR.SERVER_ERROR + error.message,
+        message: MESSAGE.ERROR.SERVER_ERROR + ": " + error.message,
       });
     }
   }
@@ -166,9 +167,10 @@ export default class UserController {
         newApiKey: newApiKey,
       });
     } catch (error) {
+      console.error("Error in generateNewApiKey:", error);
       return res.status(500).json({
         success: false,
-        message: MESSAGE.ERROR.SERVER_ERROR + error.message,
+        message: MESSAGE.ERROR.SERVER_ERROR + ": " + error.message,
       });
     }
   }
@@ -194,7 +196,7 @@ export default class UserController {
     } catch (error) {
       return res.status(500).json({
         success: false,
-        message: MESSAGE.ERROR.SERVER_ERROR + error.message,
+        message: MESSAGE.ERROR.SERVER_ERROR + ": " + error.message,
       });
     }
   }
@@ -227,7 +229,7 @@ export default class UserController {
     } catch (error) {
       return res.status(500).json({
         success: false,
-        message: MESSAGE.ERROR.AI_SERVICE_ERROR + error.message,
+        message: MESSAGE.ERROR.AI_SERVICE_ERROR + ": " + error.message,
       });
     }
   }
