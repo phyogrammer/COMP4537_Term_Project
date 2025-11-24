@@ -20,9 +20,9 @@ const endpoints = {
 };
 
 const htmlPaths = {
-    ADMIN_DASHBOARD: clientBaseUrl + 'Client/html/adminDashboard.html',
-    USER_DASHBOARD: clientBaseUrl + 'Client/html/userDashboard.html',
-    LOGIN: clientBaseUrl + 'Client/index.html'
+    ADMIN_DASHBOARD: clientBaseUrl + 'html/adminDashboard.html',
+    USER_DASHBOARD: clientBaseUrl + 'html/userDashboard.html',
+    LOGIN: clientBaseUrl + 'index.html'
 };
 
 const responseStrings = {
