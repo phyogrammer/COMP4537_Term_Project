@@ -1,4 +1,5 @@
 const apiBaseUrl = 'https://termprojserver.onrender.com/api/';
+const clientBaseUrl = 'https://comp4537sqltester.netlify.app/';
 
 const endpoints = {
     // User Authentication
@@ -19,9 +20,9 @@ const endpoints = {
 };
 
 const htmlPaths = {
-    ADMIN_DASHBOARD: '/Client/html/adminDashboard.html',
-    USER_DASHBOARD: '/Client/html/userDashboard.html',
-    LOGIN: '/Client/index.html'
+    ADMIN_DASHBOARD: clientBaseUrl + 'Client/html/adminDashboard.html',
+    USER_DASHBOARD: clientBaseUrl + 'Client/html/userDashboard.html',
+    LOGIN: clientBaseUrl + 'Client/index.html'
 };
 
 const responseStrings = {
