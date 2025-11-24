@@ -1,0 +1,3 @@
+AI Attributions for the Server 
+
+Swagger & API documentation - Asked for help writing a documentation for api endpoints and setting up swagger
