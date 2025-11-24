@@ -3,11 +3,14 @@ import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import swaggerUi from "swagger-ui-express";
+import swaggerJsdoc from "swagger-jsdoc";
 
 import DatabaseConnection from "./config/database.js";
 import UserRoutes from "./routes/userRoutes.js";
 import AdminRoutes from "./routes/adminRoutes.js";
 import seedApiEndpoints from "./seed/seedApiEndpoints.js";
+import { swaggerOptions } from "./config/swagger.js";
 
 dotenv.config();
 
@@ -25,15 +28,18 @@ class Application {
   async init() {
     await this.connectToDatabase();
     this.configureRoutes();
+    this.setupSwagger();
     this.startServer();
   }
 
   configureMiddleware() {
-    this.app.use(cors({
-      origin: true, 
-      credentials: true,
-    }));
-    
+    this.app.use(
+      cors({
+        origin: true,
+        credentials: true,
+      })
+    );
+
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(cookieParser());
@@ -60,6 +66,30 @@ class Application {
 
     this.app.use("/api/users", userRoutes.getRouter());
     this.app.use("/api/admin", adminRoutes.getRouter());
+  }
+
+  setupSwagger() {
+    const specs = swaggerJsdoc(swaggerOptions);
+
+    const swaggerUiOptions = {
+      customCss: ".swagger-ui .topbar { display: none }",
+      customSiteTitle: "SQL Injection Detection API Docs",
+      customfavIcon: "/favicon.ico",
+    };
+
+    // Requirement: URL must end with /doc/
+    this.app.use(
+      "/doc",
+      swaggerUi.serve,
+      swaggerUi.setup(specs, swaggerUiOptions)
+    );
+
+    // Also make it available at /doc/ for consistency
+    this.app.use(
+      "/doc/",
+      swaggerUi.serve,
+      swaggerUi.setup(specs, swaggerUiOptions)
+    );
   }
 
   startServer() {

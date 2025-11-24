@@ -134,7 +134,7 @@ export default class UserController {
 
       return res.status(200).json({
         success: true,
-        tokensLeft: user.numOfApiCallsLeft,
+        numOfApiCallsLeft: user.numOfApiCallsLeft,
       });
     } catch (error) {
       return res.status(500).json({

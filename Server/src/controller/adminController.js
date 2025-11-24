@@ -60,11 +60,11 @@ export default class AdminController {
 
   async removeUser(req, res) {
     try {
-      const userId = req.params.id;
+      const userEmail = req.params.email;
 
-      await UserModel.deleteOne({ _id: userId });
+      await UserModel.deleteOne({ email: userEmail });
 
-      await this.apiService.apiRequestsTracker("/api/admin/delete/:id");
+      await this.apiService.apiRequestsTracker("/api/admin/delete/:email");
 
       return res.status(200).json({
         success: true,
