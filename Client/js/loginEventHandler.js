@@ -6,7 +6,6 @@ class LoginEventHandler
         {
             e.preventDefault();
 
-            // We will likely have to obscure the password here before sending it over the network
             const email = document.getElementById('userEmail').value;
             const password = document.getElementById('userPassword').value;
 
@@ -16,15 +15,16 @@ class LoginEventHandler
 
     static async handleLoginFormSubmit(email, password) 
     {
-       try 
+        let response;
+        try 
         {
-            const response = await fetch(endpoints.LOGIN,
+            response = await fetch(endpoints.LOGIN,
                 {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    credentials: 'include', // Important: Include cookies in request
+                    credentials: 'include',
                     body: JSON.stringify(
                         {
                             email,
@@ -33,21 +33,19 @@ class LoginEventHandler
                 });
 
             const data = await response.json();
-            console.log("Response Data: ", data);
 
             if (data.success) 
             {
-                alert(responseStrings.LOGIN_SUCCESS);
                 PermissionsHandler.handleRedirect(data);
             }
             else
             {
-                alert(responseStrings.LOGIN_FAILURE);
+                alert(response.status + ': ' + responseStrings.LOGIN_FAILURE);
             }
         }
         catch (error)
         {
-            alert(responseStrings.LOGIN_FAILURE + ' ' + error.message);
+            alert(response.status + ': ' + responseStrings.LOGIN_FAILURE + ' ' + error.message);
         }
     }   
 }

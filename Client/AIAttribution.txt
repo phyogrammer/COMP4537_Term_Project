@@ -1,0 +1,12 @@
+AI Attributions for the Client
+
+Authentication Issues - Asked for help debugging 401 errors on the admin dashboard after login (CORS/cookie issues with credentials)
+Code Consistency - Asked to review if all JS files had similar style and identify any bad practices
+Error Handling - Requested HTTP status codes be displayed in all error messages
+DOM Timing Issues - Reported "The login button isn't showing up anymore" and worked through solutions (DOMContentLoaded vs defer)
+Permission Checks - Asked "If a user navigated to admin dash, what would happen?" then implemented role-based access control
+Scope Issues - Helped resolve an issue with the response variable scope when trying to present status code in catch blocks
+Style - Asked to assist with changes to the bootstrap examples
+Strings - Asked to move any hard coded strings from the HTML files to the enStrings.js file. Also had it create the names for the keys and retreiving and adding the strings to the proper elements through the DOM.
+Paths - Had an Issue with the paths when registering, had it help me include the html paths in the enStrings and add them into permissionsHandler.
+This document - Most of these were listed when I asked copilot to list how I got it to help me with the project and I included some that it didn't list. Like this one.

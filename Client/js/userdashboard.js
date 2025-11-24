@@ -1,30 +1,91 @@
-class UserDashboard {
+class UserDashboard 
+{
 
-    static async getUserInfo() 
+    static init() 
     {
+        PermissionsHandler.initializeLogoutButton();
+        UserDashboard.loadUserAPIKey();
+        UserDashboard.loadUserTokens();
+    }
+
+    static async loadUserAPIKey() 
+    {
+        let response;
         try 
         {
-            // figure out the get requests and endpoints
-            const response = await fetch('/api/user/info', 
-                {
+            response = await fetch(endpoints.GET_API_KEY, {
                 method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
+                credentials: 'include'
             });
 
-            if (!response.ok) 
+            if (response.ok) 
             {
-                throw new Error('Network response was not ok');
+                const data = await response.json();
+                if (data.success) 
+                {
+                    document.getElementById('apiKeyDisplay').textContent = data.apiKey || 'N/A';
+                }
             }
-            const data = await response.json();
-            document.getElementById('userTokenInfoDisplay').textContent = `You have ${data.tokens} tokens remaining.`;
-
-        }
+        } 
         catch (error) 
         {
-            alert('Error fetching user info: ' + error);
+            alert(response.status + ': Error fetching API key: ' + error);
         }
+    }
 
+    static async loadUserTokens() 
+    {
+        let response;
+        try 
+        {
+            response = await fetch(endpoints.API_CALLS_LEFT, {
+                method: 'GET',
+                credentials: 'include'
+            });
+
+            if (response.ok) 
+            {
+                const data = await response.json();
+                if (data.success) 
+                {
+                    document.getElementById('tokensRemainingDisplay').textContent = data.numOfApiCallsLeft || '0';
+                }
+            }
+        } 
+        catch (error) 
+        {
+            alert(response.status + ': Error fetching tokens remaining: ' + error);
+        }
+    }
+
+    static async getNewAPIKey()
+    {
+        let response;
+        try 
+        {
+            response = await fetch(endpoints.GET_NEW_API_KEY, {
+                method: 'POST',
+                credentials: 'include'
+            });
+
+            if (response.ok) 
+            {
+                const data = await response.json();
+                if (data.success) 
+                {
+                    UserDashboard.loadUserAPIKey();
+                }
+            }
+            else
+            {
+                throw new Error('Failed to generate API key');
+            }
+        } 
+        catch (error) 
+        {
+            alert(response?.status + ': Error generating new API key: ' + error);
+        }
     }
 }
+
+UserDashboard.init();

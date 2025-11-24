@@ -12,23 +12,46 @@ class RegisterEventHandler
             const password = document.getElementById('formPassword').value;
             const repeatPassword = document.getElementById('formRepeatPassword').value;
 
-            // To-Do : Add client-side validation checks for all fields
+            if (!firstName.trim() || !lastName.trim())
+            {
+                alert('Please enter your first and last name.');
+                return;
+            }
+
+            if (!email.includes('@'))
+            {
+                alert('Please enter a valid email address.');
+                return;
+            }
+
+            if (!password.trim())
+            {
+                alert('Please enter a password.');
+                return;
+            }
+
+            if (password !== repeatPassword)
+            {
+                alert('Passwords do not match.');
+                return;
+            }
 
             RegisterEventHandler.handleRegistrationFormSubmit(firstName, lastName, email, password, repeatPassword);
         });
     }
 
-    // Can remove repeatPassword from parameters if not needed for server-side check
     static async handleRegistrationFormSubmit(firstName, lastName, email, password, repeatPassword) 
     {
+        let response;
         try 
         {
-            const response = await fetch(endpoints.REGISTER,    
+            response = await fetch(endpoints.REGISTER,    
                 {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
+                    credentials: 'include',
                     body: JSON.stringify(
                         {
                             firstName,
@@ -43,13 +66,12 @@ class RegisterEventHandler
 
             if (data.success) 
             {
-                alert(responseStrings.REGISTER_SUCCESS);
                 PermissionsHandler.handleRedirect(data);
             }
         }
         catch (error)
         {
-            alert(responseStrings.REGISTER_FAILURE + ' ' + error.message);
+            alert(response.status + ': '  + responseStrings.REGISTER_FAILURE + ' ' + error.message);
         }
     }
 }
