@@ -1,5 +1,6 @@
 const apiBaseUrl = 'https://termprojserver.onrender.com/api/';
 const clientBaseUrl = 'https://comp4537sqltester.netlify.app/';
+const swaggerDocsUrl = 'https://termprojserver.onrender.com/doc/';
 
 const endpoints = {
     // User Authentication
@@ -54,7 +55,7 @@ const loginPageStrings = {
 
 const userDashboardStrings = {
     SIDEBAR_HEADER: 'SQL injection tester',
-    SIDEBAR_ABOUT: 'About',
+    SIDEBAR_ABOUT: 'Documentation',
     SIDEBAR_CONTACT: 'Contact',
     PAGE_TITLE: 'User Dashboard',
     API_KEY_CARD_TITLE: 'Your API Key',
@@ -64,7 +65,7 @@ const userDashboardStrings = {
 
 const adminDashboardStrings = {
     SIDEBAR_HEADER: 'SQL injection tester',
-    SIDEBAR_ABOUT: 'About',
+    SIDEBAR_ABOUT: 'Documentation',
     SIDEBAR_CONTACT: 'Contact',
     PAGE_TITLE: 'Admin Dashboard',
     RECENT_USER_USAGE_TITLE: 'Recent User Usage',

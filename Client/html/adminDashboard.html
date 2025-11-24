@@ -24,7 +24,7 @@
             </header>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a id="sidebarAbout" class="nav-link" href="#"></a>
+                    <a id="sidebarAbout" class="nav-link" href="https://termprojserver.onrender.com/doc/"></a>
                 <li class="nav-item">
                     <a id="sidebarContact" class="nav-link" href="#"></a>
                 </li>
@@ -88,6 +88,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('sidebarHeader').textContent = adminDashboardStrings.SIDEBAR_HEADER;
             document.getElementById('sidebarAbout').textContent = adminDashboardStrings.SIDEBAR_ABOUT;
+            document.getElementById('sidebarAbout').href = swaggerDocsUrl;
             document.getElementById('sidebarContact').textContent = adminDashboardStrings.SIDEBAR_CONTACT;
             document.getElementById('pageTitle').textContent = adminDashboardStrings.PAGE_TITLE;
             document.getElementById('recentUserUsageTitle').textContent = adminDashboardStrings.RECENT_USER_USAGE_TITLE;
