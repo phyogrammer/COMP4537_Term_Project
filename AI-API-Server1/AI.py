@@ -1,23 +1,16 @@
 import torch
 from flask import Flask, request, jsonify
 from transformers import MobileBertTokenizer, MobileBertForSequenceClassification
+import os
 
 app = Flask(__name__)
 
-
-# requires hugging face model from `git clone https://huggingface.co/cssupport/mobilebert-sql-injection-detect` locally downloaded
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 tokenizer = MobileBertTokenizer.from_pretrained('google/mobilebert-uncased')
 model = MobileBertForSequenceClassification.from_pretrained('./mobilebert-sql-injection-detect')
 model.to(device)
 model.eval()
 
-"""
-predict of given text contains malious SQL code
-
-:param text: String
-:return: predicted class (No SQL injection or there is SQL injection) and confidence float
-"""
 def predict(text):
 
     inputs = tokenizer(text, padding=False, truncation=True, return_tensors='pt', max_length=512)
@@ -32,11 +25,6 @@ def predict(text):
     predicted_class = torch.argmax(probabilities, dim=1).item()
     return predicted_class, probabilities[0][predicted_class].item()
 
-"""
-verify SQL POST route
-
-:return: JSON object with 'lable' and 'confidence'
-"""
 @app.route("/verifySQL", methods=["POST"])
 def verifySQL():
     data = request.get_json()
@@ -55,6 +43,20 @@ def verifySQL():
             "confidence": round(confidence, 4)
         }
         return jsonify(result)
+
+@app.route("/LLM_file", methods=["GET"])
+def LLM_file():
+    path = "./mobilebert-sql-injection-detect"
+    stats = os.stat(path)
+    data = {
+	"fileName": os.path.basename(path),
+	"location": os.path.abspath(path),
+	"size": stats.st_size,
+	"last_modified": stats.st_mtime,
+	"last_accessed": stats.st_atime,
+	"created": stats.st_ctime
+    }
+    return jsonify(data)
 #text = "SELECT * FROM users WHERE username = 'admin' AND password = 'password';"
 #text = "select * from users where username = 'admin' and password = 'password';"
 #text = "SELECT * from USERS where id  =  '1' or @ @1  =  1 union select 1,version  (    )   -- 1'"
